@@ -1,0 +1,4 @@
+Individual Assignment 4:
+
+Tool Used: I used ChatGPT for the applications in this assignment, because I did not feel confident with the material since class was canceled, and I felt the class examples and resources online didn't fully help me understand the topics.
+Prompts Given/Kept/Discarded: I used it almost entirely for debugging. I didn't record every prompt but I would ask it things like Why is the viewModel not working in the main class in the mainActivity when I was getting errors about composable functions. I kept material provided the funcitonality that I desired, but I also wanted to keep a solid understanding of what I was doing, so I discarded any responses where the AI would just spit out a ton of code at me, since that isn't what I wanted. When I used it, I preferred the small answers with detailed explanations of how to apply it.
