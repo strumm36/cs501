@@ -21,27 +21,32 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lifetracker.ui.theme.LifeTrackerTheme
 import android.util.Log
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Button
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
-    private lateinit var viewModel: LifeTrackerViewModel
+    private val viewModel: LifeTrackerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        viewModel = ViewModelProvider(this)[LifeTrackerViewModel::class.java]
-        viewModel.addEvent("onCreate")
         setContent {
-
+            viewModel.addEvent("onCreate")
             LifeTrackerTheme {
+                var screen by rememberSaveable {mutableStateOf(0)}
+                var snackbarEnabled by rememberSaveable {mutableStateOf(true)}
                 val scope = rememberCoroutineScope()
                 val snackbarHostState = remember { SnackbarHostState() }
                 Scaffold(
@@ -49,49 +54,83 @@ class MainActivity : ComponentActivity() {
                     snackbarHost = {
                         SnackbarHost(hostState = snackbarHostState)
                     }) { innerPadding ->
-                    LazyColumn() {
-                        items(viewModel.listItems) { item ->
-                            if ("onCreate" in item) {
-                                Text(item, color=Color.Green)
-                                LaunchedEffect(item) {
-                                    scope.launch {
-                                        snackbarHostState.showSnackbar(item)
+                    if (screen == 0) {
+                        Column (Modifier.padding(innerPadding)) {
+                            Button({ screen = 1 }) {
+                                Text("Settings")
+                            }
+                            LazyColumn() {
+                                items(viewModel.listItems) { item ->
+                                        if ("onCreate" in item) {
+                                            Text(item, color = Color.Green)
+                                            LaunchedEffect(item) {
+                                                if (snackbarEnabled) {
+                                                    scope.launch {
+                                                        snackbarHostState.showSnackbar(item)
+                                                    }
+                                                }
+                                            }
+                                        } else if ("onStart" in item) {
+                                            Text(item, color = Color.Blue)
+                                            LaunchedEffect(item) {
+                                                if (snackbarEnabled) {
+                                                    scope.launch {
+                                                        snackbarHostState.showSnackbar(item)
+                                                    }
+                                                }
+                                            }
+                                        } else if ("onResume" in item) {
+                                            Text(item, color = Color.Magenta)
+                                            LaunchedEffect(item) {
+                                                if (snackbarEnabled) {
+                                                    scope.launch {
+                                                        snackbarHostState.showSnackbar(item)
+                                                    }
+                                                }
+                                            }
+                                        } else if ("onPause" in item) {
+                                            Text(item, color = Color.Gray)
+                                            LaunchedEffect(item) {
+                                                if (snackbarEnabled) {
+                                                    scope.launch {
+                                                        snackbarHostState.showSnackbar(item)
+                                                    }
+                                                }
+                                            }
+                                        } else if ("onStop" in item) {
+                                            Text(item, color = Color.Red)
+                                            LaunchedEffect(item) {
+                                                if (snackbarEnabled) {
+                                                    scope.launch {
+                                                        snackbarHostState.showSnackbar(item)
+                                                    }
+                                                }
+                                            }
+                                        } else if ("onDestroy" in item) {
+                                            Text(item, color = Color.Black)
+                                            LaunchedEffect(item) {
+                                                if (snackbarEnabled) {
+                                                    scope.launch {
+                                                        snackbarHostState.showSnackbar(item)
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
-                            } else if ("onStart" in item) {
-                                Text(item, color=Color.Blue)
-                                LaunchedEffect(item) {
-                                    scope.launch {
-                                        snackbarHostState.showSnackbar(item)
-                                    }
+                            }
+                    } else {
+                        Column (Modifier.padding(innerPadding)) {
+                            Button({ screen = 0 }) {
+                                Text("Back")
+                            }
+                            if (snackbarEnabled) {
+                                Button({ snackbarEnabled = false }) {
+                                    Text( "Disable Snackbar")
                                 }
-                            } else if ("onResume" in item) {
-                                Text(item, color=Color.Magenta)
-                                LaunchedEffect(item) {
-                                    scope.launch {
-                                        snackbarHostState.showSnackbar(item)
-                                    }
-                                }
-                            } else if ("onPause" in item) {
-                                Text(item, color=Color.Gray)
-                                LaunchedEffect(item) {
-                                    scope.launch {
-                                        snackbarHostState.showSnackbar(item)
-                                    }
-                                }
-                            } else if ("onStop" in item) {
-                                Text(item, color=Color.Red)
-                                LaunchedEffect(item) {
-                                    scope.launch {
-                                        snackbarHostState.showSnackbar(item)
-                                    }
-                                }
-                            } else if ("onDestroy" in item) {
-                                Text(item, color=Color.Black)
-                                LaunchedEffect(item) {
-                                    scope.launch {
-                                        snackbarHostState.showSnackbar(item)
-                                    }
+                            } else {
+                                Button({ snackbarEnabled = true }) {
+                                    Text( "Enable Snackbar")
                                 }
                             }
                         }
