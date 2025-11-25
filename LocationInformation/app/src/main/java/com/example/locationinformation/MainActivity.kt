@@ -130,7 +130,6 @@ fun LocationPermissionWrapper(
 }
 
 
-// MarkerMap.kt
 @Composable
 fun MarkerMap(
     userLocationState: State<LatLng?>,
@@ -186,11 +185,10 @@ fun MarkerMap(
             customMarkers.add(MarkerData(latLng, address))
         }
     ) {
-        // Marker at user location with address
+        // Marker at user location with address (recreated whenever user moves)
         userLocationState.value?.let { latLng ->
-            val userMarkerState = remember { MarkerState(latLng) }
             Marker(
-                state = userMarkerState,
+                state = MarkerState(latLng),
                 title = "You are here",
                 snippet = userAddress
             )
